@@ -4,6 +4,8 @@
 一种将位置信息编码到注意力机制中的方法，通过旋转向量来表示相对位置。
 具有良好的外推性和位置感知能力。
 
+通过旋转 Q/K，让 attention score 感知相对位置。
+
 参考论文: RoFormer: Enhanced Transformer with Rotary Position Embedding
 """
 
@@ -32,7 +34,7 @@ class RotaryEmbedding(nn.Module):
 
         # 预计算 cos 和 sin 值，避免重复计算
         cos, sin = self.precompute_freqs(head_dim, max_seq_len, theta)
-        self.register_buffer("cos", cos, persistent=False)
+        self.register_buffer("cos", cos, persistent=False)  # register_buffer指不是可训练参数，不存入模型权重
         self.register_buffer("sin", sin, persistent=False)
 
     def precompute_freqs(self, head_dim, max_seq_len, theta):
